@@ -1,6 +1,10 @@
 import streamlit as st
+import openai
 
-st.title("Echo Bot")
+openai.api_key = st.secrets["OPENAI_API_KEY"]
+
+st.title("💬 Chatbot")
+st.caption("🚀 A streamlit chatbot powered by OpenAI LLM")
 
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -19,7 +23,11 @@ if prompt := st.chat_input("What is up?"):
   # Add user message to chat history
   st.session_state.messages.append({"role": "user", "content": prompt})
 
-  response = f"Echo: {prompt}"
+  response = openai.ChatCompletion.create(
+		model="gpt-3.5-turbo",
+		messages=st.session_state.messages
+	).choices[0].message.content
+
   # Display assistant response in chat message container
   with st.chat_message("assistant"):
     st.markdown(response)
